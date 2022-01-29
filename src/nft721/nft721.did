@@ -1,0 +1,78 @@
+type User = variant {
+    Principal: principal;
+    Address: text;
+};
+
+type SubAccount = vec nat8;
+
+type Asset = record {
+    uri: text;
+    mime: text;
+    extension: opt Extension;
+};
+
+type Token = record {
+    id: text;
+    mint: nat64;
+    asset: Asset;
+    owner: User;
+};
+
+type Extension = record {
+    "principal": principal;
+    types: vec text;
+};
+
+type ErrorCode = variant {
+    ManagementCanisterUnreachable;
+    UuidInvalidByteLength;
+    BurnIsLargerThanSupply;
+    TokenNotFound;
+    IsAlreadyOperator;
+    OperatorNotFound;
+    IsAlreadyController;
+    ControllerNotFound;
+};
+
+type BoolResult = variant {
+    Ok: bool;
+    Err: ErrorCode;
+};
+
+type UserResult = variant {
+    Ok: User;
+    Err: ErrorCode;
+};
+
+type TokenResult = variant {
+    Ok: Token;
+    Err: ErrorCode;
+};
+
+type EmptyResult = variant {
+    Ok: null;
+    Err: ErrorCode;
+};
+
+type nft721 = service {
+    "symbol": () -> (text) query;
+    "name": () -> (text) query;
+    "balance_of": (User) -> (nat64) query;
+    "owner_of": (text, User) -> (BoolResult) query;
+    "get_approved": (text) -> (UserResult) query;
+    "is_approved_for_all": (User, opt SubAccount) -> (bool) query;
+    "total_supply": () -> (nat64) query;
+    "tokens": (opt nat64, opt nat64) -> (vec Token) query;
+    "tokens_of_owner": (User, opt nat64, opt nat64) -> (vec Token) query;
+    "get_extension": () -> (opt Extension) query;
+    "mint": (Asset, opt User) -> (TokenResult);
+    "burn": (nat64) -> (nat64);
+    "set_asset": (text, Asset) -> (TokenResult);
+    "transfer_from": (User, User, text, opt SubAccount) -> (EmptyResult);
+    "approve": (text, bool, opt SubAccount) -> (EmptyResult);
+    "set_approval_for_all": (User, bool, opt SubAccount) -> (EmptyResult);
+    "set_controller": (principal, bool) -> (EmptyResult);
+    "set_extension": (opt Extension) -> ();
+};
+
+service : (principal, text, text) -> nft721
