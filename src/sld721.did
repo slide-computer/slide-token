@@ -1,0 +1,52 @@
+type User = variant {
+    Principal: principal;
+    Account: blob;
+    Null;
+};
+
+type SubAccount = blob;
+
+type Token = record {
+    id: principal;
+    owner: User;
+};
+
+type Extension = record {
+    "principal": principal;
+    types: vec text;
+};
+
+type Result = variant {
+    Ok;
+    Err: text;
+};
+
+type TokenResult = variant {
+    Ok: Token;
+    Err: text;
+};
+
+type sld721 = service {
+    "balanceOf": (User) -> (nat) query;
+    "ownerOf": (principal) -> (User) query;
+    "name": () -> (text) query;
+    "symbol": () -> (text) query;
+    "totalSupply": () -> (nat) query;
+    "approve": (opt SubAccount, principal, principal, bool) -> (Result);
+    "isApproved": (principal) -> (bool) query;
+    "getApproved": (principal) -> (vec principal) query;
+    "transfer": (opt SubAccount, User, principal) -> (Result);
+    "mint": () -> (TokenResult);
+    "burn": (principal) -> (Result);
+    "tokens": () -> (vec Token) query;
+    "tokensOf": (User) -> (vec Token) query;
+    "extensions": () -> (vec record { principal; vec text }) query;
+    "setExtensions": (vec record { principal; vec text }) -> (Result);
+    "custodians": () -> (vec principal) query;
+    "setCustodian": (principal, bool) -> (Result);
+    "events": () -> (opt principal) query;
+    "setEvents": () -> (opt principal);
+    "cycles": () -> (nat) query;
+};
+
+service : (text, text, principal) -> sld721
