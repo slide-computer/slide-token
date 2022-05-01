@@ -2,6 +2,8 @@
 
 SLD721 is a non-fungible token standard based on ERC-721 adapted for the Internet Computer. The purpose of this standard is to only implement the minimal required funcionality of a ledger e.g. transfer, mint, burn and approval. Other funcionality like returning media assets that represent an NFT token is out of the scope of this standard and should be implemented in other canisters. A SLD721 token can refer to other canisters by setting extensions. 
 
+Event history tracking is not part of the NFT standard but can be implemented by setting a canister that handles events. This canister can then implement it's own history and/or use a service like [CAP](https://cap.ooo/).
+
 Canisters that implement the SLD721 token standard should have no controllers (immutable) and run the same WASM code (verifiable). This guarantees to the end-user that the canister always behaves as described in the SLD721 token standard.
 
 
