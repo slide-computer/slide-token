@@ -1,6 +1,9 @@
 # SLD721 interface specification
 
-SLD721 is a non-fungible token standard based on ERC-721 adapted for the Internet Computer. The purpose of this standard is to only implement the minimal required funcionality of a ledger e.g. transfer, mint, burn and approval. Other funcionality like returning media for an NFT token is out of the scope of this standard. Canisters that implement the SLD721 token standard should have no controllers (immutable) and run the same WASM code (verifiable). This guarantees to the end-user that the canister behaves as described in the SLD721 token standard. 
+SLD721 is a non-fungible token standard based on ERC-721 adapted for the Internet Computer. The purpose of this standard is to only implement the minimal required funcionality of a ledger e.g. transfer, mint, burn and approval. Other funcionality like returning media assets that represent an NFT token is out of the scope of this standard. 
+
+Canisters that implement the SLD721 token standard should have no controllers (immutable) and run the same WASM code (verifiable). This guarantees to the end-user that the canister always behaves as described in the SLD721 token standard.
+
 
 #### init
 ---
