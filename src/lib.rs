@@ -215,8 +215,8 @@ async fn transfer_from(from: User, to: User, token_id: Principal) -> Result<(), 
     if let Some(events) = STATE.with(|s| s.borrow().events) {
         let _: Result<(), _> = ic_cdk::api::call::call(
             events,
-            "transfer_event",
-            (from, to, token_id, ),
+            "transfer_from_event",
+            (caller(), from, to, token_id, ),
         ).await;
     }
     Ok(())

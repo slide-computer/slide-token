@@ -32,27 +32,27 @@ type UserResult = variant {
 };
 
 type sld721 = service {
-    "balance_of": (User) -> (nat) query;
-    "owner_of": (principal) -> (UserResult) query;
-    "name": () -> (text) query;
-    "symbol": () -> (text) query;
-    "total_supply": () -> (nat) query;
-    "approve": (opt SubAccount, principal, principal, bool) -> (Result);
-    "is_approved": (principal) -> (bool) query;
-    "getApproved": (principal) -> (vec principal) query;
-    "transfer": (opt SubAccount, User, principal) -> (Result);
-    "transfer_from": (User, User, principal) -> (Result);
-    "mint": () -> (TokenResult);
-    "burn": (principal) -> (Result);
-    "tokens": () -> (vec Token) query;
-    "tokens_of": (User) -> (vec Token) query;
-    "extensions": () -> (vec record { principal; vec text }) query;
-    "set_extension": (principal, vec text) -> (Result);
-    "custodians": () -> (vec principal) query;
-    "set_custodian": (principal, bool) -> (Result);
-    "events": () -> (opt principal) query;
-    "set_events": () -> (opt principal);
-    "cycles": () -> (nat) query;
+    balance_of: (User) -> (nat) query;
+    owner_of: (principal) -> (UserResult) query;
+    name: () -> (text) query;
+    symbol: () -> (text) query;
+    total_supply: () -> (nat) query;
+    approve: (opt SubAccount, principal, principal, bool) -> (Result);
+    is_approved: (principal) -> (bool) query;
+    get_approved: (principal) -> (vec principal) query;
+    transfer: (opt SubAccount, User, principal) -> (Result);
+    transfer_from: (User, User, principal) -> (Result);
+    mint: () -> (TokenResult);
+    burn: (principal) -> (Result);
+    tokens: () -> (vec Token) query;
+    tokens_of: (User) -> (vec Token) query;
+    extensions: () -> (vec record { principal; vec text }) query;
+    set_extension: (principal, vec text) -> (Result);
+    custodians: () -> (vec principal) query;
+    set_custodian: (principal, bool) -> (Result);
+    events: () -> (opt principal) query;
+    set_events: (opt principal) -> ();
+    cycles: () -> (nat) query;
 };
 
-service : (text, text, principal) -> sld721
+service: (text, text, principal) -> sld721
