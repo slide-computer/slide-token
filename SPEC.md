@@ -51,7 +51,7 @@ total_supply: () -> (nat) query;
 
 #### approve
 ---
-Add or remove approval to a principal for a specific token id.
+Add or remove approval to a principal for a specific token id.  
 Caller must be owner of specified token id.
 ```
 approve: (opt SubAccount, principal, principal, bool) -> (Result);
@@ -74,7 +74,7 @@ get_approved: (principal) -> (vec principal) query;
 
 #### transfer
 ---
-Transfer token from caller to specified user.
+Transfer token from caller to specified user.  
 Caller must be owner of specified token id or caller must be custodian and token id has no owner yet.
 ```
 transfer: (opt SubAccount, User, principal) -> (Result);
@@ -82,7 +82,7 @@ transfer: (opt SubAccount, User, principal) -> (Result);
 
 #### transfer_from
 ---
-Transfer token from specified user to another specified user.
+Transfer token from specified user to another specified user.  
 Caller must be approved for specified token id.
 ```
 transfer_from: (User, User, principal) -> (Result);
@@ -90,7 +90,7 @@ transfer_from: (User, User, principal) -> (Result);
 
 #### mint
 ---
-Returns minted token.
+Returns minted token.  
 Caller must be custodian.
 ```
 Mint and return new token.
@@ -98,7 +98,7 @@ Mint and return new token.
 
 #### burn
 ---
-Burn specified token id.
+Burn specified token id.  
 Caller must be custodian, token id can't be burned if it already has an owner.
 ```
 burn: (principal) -> (Result);
@@ -121,7 +121,7 @@ tokens_of: (User) -> (vec Token) query;
 
 #### extensions
 ---
-Returns all extensions of SLD721 token. An extension is a canister principal and a list of it's types.
+Returns all extensions of SLD721 token. An extension is a canister principal and a list of it's types.  
 Extension example: principal `3ifmd-wqaaa-aaaah-qckda-cai` and types `@ext/common, @ext/nonfungible` for a SLD721 canister that refers to assets from a EXT canister. 
 ```
 extensions: () -> (vec record { principal; vec text }) query;
@@ -129,7 +129,7 @@ extensions: () -> (vec record { principal; vec text }) query;
 
 #### set_extension
 ---
-Add or remove extension, extension is removed when types is empty.
+Add or remove extension, extension is removed when types is empty.  
 Caller must be custodian.
 ```
 set_extension: (principal, vec text) -> (Result);
@@ -159,7 +159,7 @@ events: () -> (opt principal) query;
 
 #### set_events
 ---
-Set principal of canister that will be called for each event (transfer, mint, burn and approve).
+Set principal of canister that will be called for each event (transfer, mint, burn and approve).  
 Caller must be custodian.
 ```
 set_events: (opt principal) -> ();
