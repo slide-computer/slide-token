@@ -1,0 +1,56 @@
+type TokenId = nat;
+
+type Subaccount = blob;
+
+type Account = record {
+    owner: principal;
+    subaccount: opt Subaccount;
+};
+
+type TransferArgs = record {
+    from_subaccount: opt Subaccount;
+    to: Account;
+    token_id: TokenId;
+    memo : opt blob;
+    created_at_time : opt nat64;
+};
+
+type TransferError = variant {
+    NotFound;
+    NotOwner;
+    TemporarilyUnavailable;
+    GenericError : record {
+        error_code : nat;
+        message : text
+    };
+};
+
+type Value = variant {
+    Nat : nat;
+    Int : int;
+    Text : text;
+    Blob : blob;
+};
+
+service : {
+    sld1_metadata: () -> (vec record {
+        text;
+        Value
+    }) query;
+    sld1_name: () -> (text) query;
+    sld1_symbol: () -> (text) query;
+    sld1_total_supply: () -> (nat) query;
+    sld1_minting_account: () -> (Account) query;
+    sld1_balance_of: (Account) -> (nat) query;
+    sld1_owner_of: (TokenId) -> (opt Account) query;
+    sld1_tokens: (opt nat) -> (vec TokenId) query;
+    sld1_tokens_of: (Account, opt nat) -> (vec TokenId) query;
+    sld1_transfer: (TransferArgs) -> (variant {
+        Ok: nat;
+        Err: TransferError
+    });
+    sld1_supported_standards : () -> (vec record {
+        name : text;
+        url : text
+    });
+}

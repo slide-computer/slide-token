@@ -1,0 +1,41 @@
+type Event = record {
+    caller: principal;
+    operation: text;
+    details: vec record {
+        text;
+        Value
+    };
+};
+
+type Value = variant {
+    Nat : nat;
+    Int : int;
+    Text : text;
+    Blob : blob;
+};
+
+type AddBlockError = variant {
+    NotAllowed;
+    TemporarilyUnavailable;
+    GenericError : record {
+        error_code : nat;
+        message : text
+    };
+};
+
+service : {
+    sld3_get_tx: (nat) -> (opt variant {
+        Event: Event;
+        Bucket: principal
+    }) query;
+    sld3_get_block: (nat) -> (opt variant {
+        Block: vec Event;
+        Bucket: principal
+    }) query;
+    sld3_add_block: (vec Event) -> (variant {
+        Ok;
+        Err: AddBlockError
+    });
+    sld3_block_size: () -> (nat) query;
+    sld3_tx_range: () -> (nat, nat) query;
+}
