@@ -8,18 +8,18 @@ type Event = record {
 };
 
 type Value = variant {
-    Nat : nat;
-    Int : int;
-    Text : text;
-    Blob : blob;
+    Nat: nat;
+    Int: int;
+    Text: text;
+    Blob: blob;
 };
 
 type AddBlockError = variant {
     NotAllowed;
     TemporarilyUnavailable;
-    GenericError : record {
-        error_code : nat;
-        message : text
+    GenericError: record {
+        error_code: nat;
+        message: text
     };
 };
 

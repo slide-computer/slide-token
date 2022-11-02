@@ -129,6 +129,7 @@ impl TransferFromError {
 pub struct Event {
     pub caller: Principal,
     pub operation: String,
+    pub time: u64,
     pub details: HashMap<String, Value>,
 }
 

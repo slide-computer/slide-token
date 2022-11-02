@@ -8,7 +8,6 @@ use ic_cdk::caller;
 use ic_cdk::export::candid::candid_method;
 use ic_cdk::export::Principal;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
-use num_traits::ToPrimitive;
 
 use crate::stable::{StableReader, StableWriter};
 use crate::state::State;

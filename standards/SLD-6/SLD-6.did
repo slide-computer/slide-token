@@ -1,0 +1,22 @@
+type SetCustodianArgs = record {
+    custodian: principal;
+    approved: bool;
+};
+
+type SetCustodiansError = variant {
+    NotAllowed;
+    MaxCustodians: nat;
+    TemporarilyUnavailable;
+    GenericError: record {
+        error_code: nat;
+        message: text
+    };
+};
+
+service : {
+    sld6_get_custodians: () -> (vec principal) query;
+    sld6_set_custodian: (SetCustodianArgs) -> (variant {
+        Ok: nat;
+        Err: SetCustodiansError
+    });
+}

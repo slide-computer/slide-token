@@ -1,0 +1,23 @@
+type TokenId = nat;
+
+type BurnArgs = record {
+    token_id: TokenId;
+    memo: opt blob;
+    created_at_time: opt nat64;
+};
+
+type BurnError = variant {
+    NotAllowed;
+    TemporarilyUnavailable;
+    GenericError: record {
+        error_code: nat;
+        message: text
+    };
+};
+
+service : {
+    sld5_burn: (BurnArgs) -> (variant {
+        Ok: nat;
+        Err: BurnError
+    });
+}

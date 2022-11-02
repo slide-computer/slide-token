@@ -1,22 +1,42 @@
-type SetCustodianArgs = record {
-    custodian: principal;
-    approved: bool;
+type TokenId = nat;
+
+type Subaccount = blob;
+
+type Account = record {
+    owner: principal;
+    subaccount: opt Subaccount;
 };
 
-type SetCustodiansError = variant {
+type Value = variant {
+    Nat: nat;
+    Int: int;
+    Text: text;
+    Blob: blob;
+};
+
+type MintArgs = record {
+    to: Account;
+    token_id: TokenId;
+    metadata: vec record {
+        text;
+        Value
+    };
+    memo: opt blob;
+    created_at_time: opt nat64;
+};
+
+type MintError = variant {
     NotAllowed;
-    MaxCustodians: nat;
     TemporarilyUnavailable;
-    GenericError : record {
-        error_code : nat;
-        message : text
+    GenericError: record {
+        error_code: nat;
+        message: text
     };
 };
 
 service : {
-    sld4_get_custodians: () -> (vec principal) query;
-    sld4_set_custodian: (SetCustodianArgs) -> (variant {
+    sld4_mint: (MintArgs) -> (variant {
         Ok: nat;
-        Err: SetCustodiansError
+        Err: MintError
     });
 }

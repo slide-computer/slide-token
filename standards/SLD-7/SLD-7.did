@@ -1,0 +1,15 @@
+type Subaccount = blob;
+
+type Account = record {
+    owner: principal;
+    subaccount: opt Subaccount;
+};
+
+type RoyaltyFee = record {
+    account: Account;
+    fee: nat;
+};
+
+service : {
+    sld7_royalty_fee: (nat) -> (RoyaltyFee) query;
+}

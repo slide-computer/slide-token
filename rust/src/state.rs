@@ -74,7 +74,7 @@ impl State {
     }
 
     pub fn balance_of(&self, account: &Account) -> Nat {
-        Nat::from(self.tokens.iter().filter(|(_, token)| &token.account == account).count())
+        Nat::from(self.tokens.iter().filter(|(_, token)| token.account == *account).count())
     }
 
     pub fn owner_of(&self, token_id: &TokenId) -> Option<Account> {
@@ -95,7 +95,7 @@ impl State {
     pub fn tokens_of(&self, account: &Account, page: &Nat) -> Vec<&TokenId> {
         page.0.to_usize().map_or(vec![], |page| self.tokens
             .iter()
-            .filter(|(_, token)| &token.account == account)
+            .filter(|(_, token)| token.account == *account)
             .skip(page * 100_000)
             .take(100_000)
             .map(|(token_id, _)| token_id)
@@ -128,16 +128,19 @@ impl State {
         let mut event = Event {
             caller,
             operation: "sld2:approve".into(),
+            time: time(),
             details: HashMap::from([
                 ("token_id".into(), Value::Nat(args.token_id.clone())),
                 ("spender".into(), Value::Text(args.spender.to_string())),
                 ("approved".into(), Value::Nat(Nat::from(if args.approved { 1 } else { 0 }))),
-                ("time".into(), Value::Nat(Nat::from(time()))),
                 ("from_tx".into(), Value::Nat(token.tx_id.clone())),
             ]),
         };
         if let Some(memo) = args.memo {
             event.details.insert("memo".into(), Value::Blob(Vec::from(memo)));
+        }
+        if let Some(created_at_time) = args.created_at_time {
+            event.details.insert("time".into(), Value::Nat(Nat::from(created_at_time)));
         }
         self.write_tx(event);
         let tx_id: Nat = self.tx_total.clone() - 1;
@@ -201,6 +204,7 @@ impl State {
                     "sld2:transfer_from"
                 }
             ).into(),
+            time: time(),
             details: HashMap::from([
                 ("token_id".into(), Value::Nat(args.token_id.clone())),
                 ("time".into(), Value::Nat(Nat::from(time()))),
@@ -209,6 +213,9 @@ impl State {
         };
         if let Some(memo) = args.memo {
             event.details.insert("memo".into(), Value::Blob(Vec::from(memo)));
+        }
+        if let Some(created_at_time) = args.created_at_time {
+            event.details.insert("time".into(), Value::Nat(Nat::from(created_at_time)));
         }
         self.write_tx(event);
         token.tx_id = self.tx_total.clone() - 1;
@@ -255,10 +262,10 @@ impl State {
         let event = Event {
             caller,
             operation: "sld4:set_custodian".into(),
+            time: time(),
             details: HashMap::from([
                 ("custodian".into(), Value::Text(args.custodian.to_string())),
                 ("approved".into(), Value::Nat(Nat::from(if args.approved { 1 } else { 0 }))),
-                ("time".into(), Value::Nat(Nat::from(time()))),
                 ("from_tx".into(), Value::Nat(self.custodians_tx.clone())),
             ]),
         };

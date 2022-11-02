@@ -11,75 +11,115 @@ type TransferArgs = record {
     from_subaccount: opt Subaccount;
     to: Account;
     token_id: TokenId;
-    memo : opt blob;
-    created_at_time : opt nat64;
+    memo: opt blob;
+    created_at_time: opt nat64;
 };
 
 type TransferError = variant {
     NotFound;
     NotOwner;
-    NotSelf;
     TemporarilyUnavailable;
-    GenericError : record {
-        error_code : nat;
-        message : text
+    GenericError: record {
+        error_code: nat;
+        message: text
     };
 };
 
 type Value = variant {
-    Nat : nat;
-    Int : int;
-    Text : text;
-    Blob : blob;
+    Nat: nat;
+    Int: int;
+    Text: text;
+    Blob: blob;
 };
 
-type ApproveArgs = record {
+type SetApprovalArgs = record {
     from_subaccount: opt Subaccount;
     spender: principal;
     token_id: TokenId;
     approved: bool;
-    memo : opt blob;
-    created_at_time : opt nat64;
+    memo: opt blob;
+    created_at_time: opt nat64;
 };
 
-type ApproveError = variant {
+type SetApprovalError = variant {
     NotFound;
     NotOwner;
-    NotSelf;
-    MaxApprovals : nat;
+    MaxApprovals: nat;
     TemporarilyUnavailable;
-    GenericError : record {
-        error_code : nat;
-        message : text
+    GenericError: record {
+        error_code: nat;
+        message: text
+    };
+};
+
+type SetApprovalForAllArgs = record {
+    from_subaccount: opt Subaccount;
+    spender: principal;
+    approved: bool;
+    memo: opt blob;
+    created_at_time: opt nat64;
+};
+
+type SetApprovalForAllError = variant {
+    MaxApprovals: nat;
+    TemporarilyUnavailable;
+    GenericError: record {
+        error_code: nat;
+        message: text
     };
 };
 
 type TransferFromArgs = record {
-    from : Account;
-    to : Account;
+    from: Account;
+    to: Account;
     token_id: TokenId;
-    memo : opt blob;
-    created_at_time : opt nat64;
+    memo: opt blob;
+    created_at_time: opt nat64;
 };
 
 type TransferFromError = variant {
     NotFound;
     NotOwner;
-    NotSelf;
     NotApproved;
     TemporarilyUnavailable;
-    GenericError : record {
-        error_code : nat;
-        message : text
+    GenericError: record {
+        error_code: nat;
+        message: text
     };
 };
 
-type Event = record {
-    caller: principal;
-    operation: text;
-    details: vec record {
+type MintArgs = record {
+    to: Account;
+    token_id: TokenId;
+    metadata: vec record {
         text;
         Value
+    };
+    memo: opt blob;
+    created_at_time: opt nat64;
+};
+
+type MintError = variant {
+    NotAllowed;
+    TemporarilyUnavailable;
+    GenericError: record {
+        error_code: nat;
+        message: text
+    };
+};
+
+type BurnArgs = record {
+    token_id: TokenId;
+    memo: opt blob;
+    created_at_time: opt nat64;
+};
+
+type BurnError = variant {
+    NotAllowed;
+    TemporarilyUnavailable;
+    GenericError: record {
+        error_code: nat;
+        message: text
     };
 };
 
@@ -92,13 +132,32 @@ type SetCustodiansError = variant {
     NotAllowed;
     MaxCustodians: nat;
     TemporarilyUnavailable;
-    GenericError : record {
-        error_code : nat;
-        message : text
+    GenericError: record {
+        error_code: nat;
+        message: text
     };
 };
 
-type sld = service {
+type RoyaltyFee = record {
+    account: Account;
+    fee: nat;
+};
+
+type SetRoyaltyFeeArgs = record {
+    account: Account;
+    fee: float64;
+};
+
+type SetRoyaltyFeeError = variant {
+    NotAllowed;
+    TemporarilyUnavailable;
+    GenericError: record {
+        error_code: nat;
+        message: text
+    };
+};
+
+service : {
     sld1_metadata: () -> (vec record {
         text;
         Value
@@ -111,38 +170,47 @@ type sld = service {
     sld1_owner_of: (TokenId) -> (opt Account) query;
     sld1_tokens: (nat) -> (vec TokenId) query;
     sld1_tokens_of: (Account, nat) -> (vec TokenId) query;
+    sld1_metadata_of: (TokenId) -> (opt vec record {
+        text;
+        Value
+    }) query;
     sld1_transfer: (TransferArgs) -> (variant {
         Ok: nat;
         Err: TransferError
     });
-    sld1_supported_standards : () -> (vec record {
-        name : text;
-        url : text
+    sld1_supported_standards: () -> (vec record {
+        name: text;
+        url: text
     });
-    sld2_approve: (ApproveArgs) -> (variant {
+    sld2_set_approval: (SetApprovalArgs) -> (variant {
         Ok: nat;
-        Err: ApproveError
+        Err: SetApprovalError
+    });
+    sld2_get_approved: (TokenId) -> (vec principal) query;
+    sld2_set_approval_for_all: (SetApprovalForAllArgs) -> (variant {
+        Ok: nat;
+        Err: SetApprovalForAllError
     });
     sld2_transfer_from: (TransferFromArgs) -> (variant {
         Ok: nat;
         Err: TransferFromError
     });
-    sld2_get_approved: (TokenId) -> (vec principal) query;
-    sld3_get_tx: (nat) -> (opt variant {
-        Event: Event;
-        Bucket: principal
-    }) query;
-    sld3_get_block: (nat) -> (opt variant {
-        Block: vec Event;
-        Bucket: principal
-    }) query;
-    sld3_block_size: () -> (nat) query;
-    sld3_tx_total: () -> (nat) query;
-    sld4_get_custodians: () -> (vec principal) query;
-    sld4_set_custodian: (SetCustodianArgs) -> (variant {
+    sld4_mint: (MintArgs) -> (variant {
+        Ok: nat;
+        Err: MintError
+    });
+    sld5_burn: (BurnArgs) -> (variant {
+        Ok: nat;
+        Err: BurnError
+    });
+    sld6_get_custodians: () -> (vec principal) query;
+    sld6_set_custodian: (SetCustodianArgs) -> (variant {
         Ok: nat;
         Err: SetCustodiansError
     });
-};
-
-service : () -> sld
+    sld7_royalty_fee: (nat) -> (RoyaltyFee) query;
+    sld8_set_royalty_fee: (SetRoyaltyFeeArgs) -> (variant {
+        Ok: nat;
+        Err: SetRoyaltyFeeError
+    });
+}

@@ -1,0 +1,27 @@
+type Subaccount = blob;
+
+type Account = record {
+    owner: principal;
+    subaccount: opt Subaccount;
+};
+
+type SetRoyaltyFeeArgs = record {
+    account: Account;
+    fee: float64;
+};
+
+type SetRoyaltyFeeError = variant {
+    NotAllowed;
+    TemporarilyUnavailable;
+    GenericError: record {
+        error_code: nat;
+        message: text
+    };
+};
+
+service : {
+    sld8_set_royalty_fee: (SetRoyaltyFeeArgs) -> (variant {
+        Ok: nat;
+        Err: SetRoyaltyFeeError
+    });
+}

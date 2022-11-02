@@ -7,32 +7,49 @@ type Account = record {
     subaccount: opt Subaccount;
 };
 
-type ApproveArgs = record {
+type SetApprovalArgs = record {
     from_subaccount: opt Subaccount;
     spender: principal;
     token_id: TokenId;
     approved: bool;
-    memo : opt blob;
-    created_at_time : opt nat64;
+    memo: opt blob;
+    created_at_time: opt nat64;
 };
 
-type ApproveError = variant {
+type SetApprovalError = variant {
     NotFound;
     NotOwner;
-    MaxApprovals : nat;
+    MaxApprovals: nat;
     TemporarilyUnavailable;
-    GenericError : record {
-        error_code : nat;
-        message : text
+    GenericError: record {
+        error_code: nat;
+        message: text
+    };
+};
+
+type SetApprovalForAllArgs = record {
+    from_subaccount: opt Subaccount;
+    operator: principal;
+    approved: bool;
+    memo: opt blob;
+    created_at_time: opt nat64;
+};
+
+type SetApprovalForAllError = variant {
+    MaxApprovals: nat;
+    TemporarilyUnavailable;
+    GenericError: record {
+        error_code: nat;
+        message: text
     };
 };
 
 type TransferFromArgs = record {
-    from : Account;
-    to : Account;
+    from: Account;
+    to: Account;
     token_id: TokenId;
-    memo : opt blob;
-    created_at_time : opt nat64;
+    memo: opt blob;
+    created_at_time: opt nat64;
 };
 
 type TransferFromError = variant {
@@ -40,20 +57,25 @@ type TransferFromError = variant {
     NotOwner;
     NotApproved;
     TemporarilyUnavailable;
-    GenericError : record {
-        error_code : nat;
-        message : text
+    GenericError: record {
+        error_code: nat;
+        message: text
     };
 };
 
 service : {
-    sld2_approve: (ApproveArgs) -> (variant {
+    sld2_set_approval: (SetApprovalArgs) -> (variant {
         Ok: nat;
-        Err: ApproveError
+        Err: SetApprovalError
     });
+    sld2_get_approved: (TokenId) -> (vec principal) query;
+    sld2_set_approval_for_all: (SetApprovalForAllArgs) -> (variant {
+        Ok: nat;
+        Err: SetApprovalForAllError
+    });
+    sld2_get_approved_for_all: (Account) -> (vec principal) query;
     sld2_transfer_from: (TransferFromArgs) -> (variant {
         Ok: nat;
         Err: TransferFromError
     });
-    sld2_get_approved: (TokenId) -> (vec principal) query;
 }
