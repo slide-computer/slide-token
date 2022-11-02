@@ -169,7 +169,7 @@ The base standard intentionally excludes some ledger functions essential for bui
 - Pre-signed transactions.
 
 The standard defines the `sld1_supported_standards` endpoint to accommodate these and other future extensions.
-This endpoint returns names of all specifications (e.g., `"sld-2"` or `"DIP-721-V2"`) implemented by the ledger.
+This endpoint returns names of all specifications (e.g., `"SLD-2"` or `"DIP-721-V2"`) implemented by the ledger.
 
 ## Metadata
 
